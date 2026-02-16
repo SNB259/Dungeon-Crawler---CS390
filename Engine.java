@@ -1,7 +1,5 @@
-abstract public class Engine {
+public interface Engine {
 
-    void update(){
-        System.out.println("display");
-    }
+    public void update();
 
 }
