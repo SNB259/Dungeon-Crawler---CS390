@@ -39,6 +39,22 @@ public class Sprite implements Displayable{
         return sizeY;
     }
 
+    public void setPosX(double x){
+        posX = x;
+    }
+
+    public void setPosY(double y){
+        posY = y;
+    }
+
+    public void setSizeX(double x_size){
+        sizeX = x_size;
+    }
+
+    public void setSizeY(double y_size){
+        sizeY = y_size;
+    }
+
 
 
 }

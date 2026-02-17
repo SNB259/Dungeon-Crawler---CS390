@@ -1,4 +1,6 @@
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 
 public class DynamicSprite extends SolidSprite{
 
@@ -38,5 +40,36 @@ public class DynamicSprite extends SolidSprite{
 
         g.drawImage(super.getImage(), destinationXStart, destinationYStart, destinationXEnd, destinationYEnd, sourceXStart, sourceYStart, sourceXEnd, sourceYEnd, null);
     }
+
+    //breaks?
+    private void move(){
+        switch(direction){
+            case NORTH -> {
+                setPosY(getPosY() - speed);
+            }
+            case SOUTH -> {
+                setPosY(getPosY() + speed);
+            }
+            case WEST -> {
+                setPosX(getPosX() - speed);
+            }
+            case EAST -> {
+                setPosX(getPosX() + speed);
+            }
+        }
+    }
+
+//    private boolean isMovingPossible(ArrayList<Sprite> environment){
+//        Rectangle2D.Double hitbox = new Rectangle2D.Double(getPosX(), getPosY(), getSizeX(), getSizeY());
+//
+//        for(int i=0; i<environment.size(); i++){
+//            if(hitbox.intersects(environment[i].hitbox) )
+//        }
+//
+//        return true;
+//    }
+
+    
+
 
 }
