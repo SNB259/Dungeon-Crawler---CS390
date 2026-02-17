@@ -59,15 +59,37 @@ public class DynamicSprite extends SolidSprite{
         }
     }
 
-//    private boolean isMovingPossible(ArrayList<Sprite> environment){
-//        Rectangle2D.Double hitbox = new Rectangle2D.Double(getPosX(), getPosY(), getSizeX(), getSizeY());
-//
-//        for(int i=0; i<environment.size(); i++){
-//            if(hitbox.intersects(environment[i].hitbox) )
-//        }
-//
-//        return true;
-//    }
+    private boolean isMovingPossible(ArrayList<Sprite> environment){
+
+        double offSetX = getPosX();
+        double offSetY = getPosY();
+
+        switch(direction) {
+            case NORTH -> offSetY -= speed;
+            case SOUTH -> offSetY += speed;
+            case WEST  -> offSetX -= speed;
+            case EAST  -> offSetX += speed;
+        }
+
+        Rectangle2D.Double offSetHitbox = new Rectangle2D.Double(offSetX, offSetY, getSizeX(), getSizeY());
+
+        for(int i=0; i<environment.size(); i++){
+            if(environment.get(i) instanceof SolidSprite && environment.get(i) != this){
+                Rectangle2D.Double hitbox = new Rectangle2D.Double(environment.get(i).getPosX(), environment.get(i).getPosY(), environment.get(i).getSizeX(), environment.get(i).getSizeY());
+                if(offSetHitbox.intersects(hitbox)){
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    public void moveIfPossible(ArrayList<Sprite> environment){
+        if(isMovingPossible(environment)){
+            move();
+        }
+    }
 
     
 
