@@ -22,12 +22,17 @@ public class RenderEngine extends JPanel implements Engine {
 
     private void drawMenu(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Welcome! Press SPACE to Start", 150, 300);
+        g.drawString("Welcome! Press SPACE to Start", 100, 300);
     }
 
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Game Over! Press SPACE to Try Again", 150, 300);
+        g.drawString("Game Over! Press SPACE to Try Again", 100, 300);
+    }
+
+    private void drawTransition(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawString("Congratulations! Press SPACE to Continue", 100, 300);
     }
 
     @Override
@@ -40,6 +45,10 @@ public class RenderEngine extends JPanel implements Engine {
 
         if (gameEngine.getGameState() == GameState.GAMEOVER){
             drawGameOver(g);
+        }
+
+        if(gameEngine.getGameState() == GameState.TRANSITION){
+            drawTransition(g);
         }
 
         if (gameEngine.getGameState() == GameState.PLAYING) {

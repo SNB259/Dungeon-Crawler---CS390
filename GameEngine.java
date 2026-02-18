@@ -1,18 +1,22 @@
-import javax.swing.*;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
+import java.util.Random;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class GameEngine implements Engine, KeyListener{
 
-
+    public Random random;
     private GameState gameState;
     private final DynamicSprite reference;
     PhysicEngine physicEngine;
+    StringBuilder levelString;
 
-    GameEngine(DynamicSprite reference){
-        this.physicEngine = new PhysicEngine();
+    GameEngine(DynamicSprite reference, PhysicEngine physicEngine){
+        this.physicEngine = physicEngine;
         this.reference = reference;
         this.gameState = GameState.MENU;
+        this.random = new Random();
         System.out.println(gameState);
     }
 
@@ -20,13 +24,25 @@ public class GameEngine implements Engine, KeyListener{
     public void update() {
         if (gameState == GameState.PLAYING) {
             physicEngine.update();
-//            Timer physicTimer = new Timer(50,(time)-> physicEngine.update());
-//            physicTimer.start();
         }
         if (!reference.isWalking){
             gameState = GameState.GAMEOVER;
         }
 
+        if(reference.getPosX() > 400 && gameState == GameState.PLAYING){
+            gameState = GameState.TRANSITION;
+        }
+
+        reference.resetPos(gameState);
+    }
+
+    public void setGameState(GameState newState) {
+
+        if (this.gameState != newState) {   // only if actually changing
+            this.gameState = newState;
+
+            resetLevel();  // runs once per change
+        }
     }
 
     public GameState getGameState(){
@@ -69,4 +85,62 @@ public class GameEngine implements Engine, KeyListener{
     public void keyReleased(KeyEvent e) {
 
     }
+
+    public void resetLevel(int amount){
+        char[][] container = new char[9][6];
+        levelString = new StringBuilder();
+        int placed = 0;
+
+        while (placed < amount) {
+
+            int rowRandIdx = random.nextInt(7) + 1;
+            int columnRandIdx = random.nextInt(4) + 1;
+
+            if (container[rowRandIdx][columnRandIdx] != 'R' && !(rowRandIdx==4 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==3) && !(rowRandIdx==6 && columnRandIdx==3)) {
+                container[rowRandIdx][columnRandIdx] = 'R';
+                placed++;
+            }
+        }
+
+        for(int i=0; i< container.length; i++){
+            for(int j=0; j<container[i].length; j++){
+                if(i==0 || i==8){
+                    container[i][j] = 'T';
+                }
+                else {
+
+                    container[i][0] = 'T';
+                    container[i][5] = 'T';
+                    if(container[i][j] != 'T' && container[i][j] != 'R'){
+                        container[i][j] = ' ';
+                    }
+                }
+            }
+        }
+        container[5][5] = 'E';
+
+        for (int i = 0; i < container.length; i++) {
+            for (int j = 0; j < container[i].length; j++) {
+                levelString.append(container[i][j]);
+            }
+            levelString.append("\n"); // very important
+        }
+        System.out.println(levelString);
+
+        try{
+            Files.writeString(Path.of("The assets-20260206/level/randLevel.txt"), levelString);
+        } catch (Exception e){
+            System.out.println("Error in file retrieval when resetting level");
+        }
+    }
 }
+
+//TTTTTT
+//T    T
+//T R  T
+//T    E
+//T   RT
+//T    T
+//T    T
+//T  R T
+//TTTTTT

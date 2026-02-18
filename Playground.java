@@ -35,7 +35,7 @@ public class Playground {
                             environment.add(new SolidSprite(imageTree, columnNumber * imageTreeWidth,
                                     lineNumber * imageTreeHeight, imageTreeWidth, imageTreeHeight));
                             break;
-                        case ' ':
+                        case ' ', 'E':
                             environment.add(new Sprite(imageGrass,columnNumber * imageGrassWidth,
                                     lineNumber * imageGrassHeight, imageGrassWidth, imageGrassHeight));
                             break;

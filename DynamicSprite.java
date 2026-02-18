@@ -65,10 +65,10 @@ public class DynamicSprite extends SolidSprite{
         double offSetY = getPosY();
 
         switch(direction) {
-            case NORTH -> offSetY -= speed;
-            case SOUTH -> offSetY += speed;
-            case WEST  -> offSetX -= speed;
-            case EAST  -> offSetX += speed;
+            case NORTH -> offSetY -= (speed-2.5);
+            case SOUTH -> offSetY += (speed-2.5);
+            case WEST  -> offSetX -= (speed-2.5);
+            case EAST  -> offSetX += (speed-2.5);
         }
 
         Rectangle2D.Double offSetHitbox = new Rectangle2D.Double(offSetX, offSetY, getSizeX(), getSizeY());
@@ -96,7 +96,13 @@ public class DynamicSprite extends SolidSprite{
 
     }
 
-    
+    public void resetPos(GameState gameState){
+        if(gameState == GameState.GAMEOVER || gameState == GameState.TRANSITION){
+            this.setPosX(200);
+            this.setPosY(300);
+            this.setDirection(Direction.SOUTH);
+        }
+    }
 
 
 }

@@ -17,9 +17,9 @@ public class Main {
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
 
-        gameEngine = new GameEngine(hero);
-        renderEngine = new RenderEngine(gameEngine);
         physicEngine = new PhysicEngine();
+        gameEngine = new GameEngine(hero, physicEngine);
+        renderEngine = new RenderEngine(gameEngine);
         playground = new Playground("The assets-20260206/level/level1.txt");
 
         renderEngine.addToRenderList(hero);
@@ -28,8 +28,6 @@ public class Main {
         renderTimer.start();
         Timer gameTimer = new Timer(50, (time) -> gameEngine.update());
         gameTimer.start();
-        Timer physicTimer = new Timer(50,(time)-> physicEngine.update());
-        physicTimer.start();
 
         displayZoneFrame.addKeyListener(gameEngine);
         displayZoneFrame.getContentPane().add(renderEngine);
@@ -41,6 +39,7 @@ public class Main {
         renderEngine.addToRenderList(hero);
         physicEngine.addToMovingSpriteList(hero);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
+//        gameEngine.resetLevel(5);
     }
 
     public static void main(String[] args) throws Exception {

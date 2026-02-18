@@ -1,4 +1,4 @@
 public enum GameState {
-    MENU, PLAYING, GAMEOVER
+    MENU, PLAYING, TRANSITION, GAMEOVER
 
 }
