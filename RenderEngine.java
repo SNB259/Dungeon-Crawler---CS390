@@ -5,9 +5,11 @@ import java.util.ArrayList;
 public class RenderEngine extends JPanel implements Engine {
 
     private ArrayList<Displayable> renderList = new ArrayList<Displayable>();
+    private GameEngine gameEngine;
 
-    public RenderEngine() {
+    public RenderEngine(GameEngine gameEngine) {
         this.renderList = renderList;
+        this.gameEngine = gameEngine;
     }
 
     public void setRenderList(ArrayList<Displayable> renderList){
@@ -18,12 +20,34 @@ public class RenderEngine extends JPanel implements Engine {
         renderList.add(displayable);
     }
 
+    private void drawMenu(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawString("Welcome! Press SPACE to Start", 150, 300);
+    }
+
+    private void drawGameOver(Graphics g) {
+        g.setColor(Color.BLACK);
+        g.drawString("Game Over! Press SPACE to Try Again", 150, 300);
+    }
+
     @Override
     public void paint(Graphics g){
         super.paint(g);
-        for (int i=0; i<renderList.size(); i++) {
-            renderList.get(i).draw(g);
+
+        if (gameEngine.getGameState() == GameState.MENU) {
+            drawMenu(g);
         }
+
+        if (gameEngine.getGameState() == GameState.GAMEOVER){
+            drawGameOver(g);
+        }
+
+        if (gameEngine.getGameState() == GameState.PLAYING) {
+            for (int i=0; i<renderList.size(); i++) {
+                renderList.get(i).draw(g);
+            }
+        }
+
     }
 
     @Override

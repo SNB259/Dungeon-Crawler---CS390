@@ -1,16 +1,10 @@
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
-import java.awt.event.KeyListener;
-import java.awt.event.KeyEvent;
-import java.util.ArrayList;
-
 import static javax.swing.WindowConstants.EXIT_ON_CLOSE;
 
 public class Main {
     JFrame displayZoneFrame;
-
     RenderEngine renderEngine;
     GameEngine gameEngine;
     PhysicEngine physicEngine;
@@ -23,8 +17,8 @@ public class Main {
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
 
-        renderEngine = new RenderEngine();
         gameEngine = new GameEngine(hero);
+        renderEngine = new RenderEngine(gameEngine);
         physicEngine = new PhysicEngine();
         playground = new Playground("The assets-20260206/level/level1.txt");
 
@@ -40,7 +34,7 @@ public class Main {
         displayZoneFrame.addKeyListener(gameEngine);
         displayZoneFrame.getContentPane().add(renderEngine);
         displayZoneFrame.setVisible(true);
-        
+
         for(int i=0; i<playground.getSpriteList().size(); i++){
             renderEngine.addToRenderList(playground.getSpriteList().get(i));
         }
