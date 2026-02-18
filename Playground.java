@@ -7,8 +7,15 @@ import java.awt.*;
 import java.io.File;
 
 public class Playground {
-    private ArrayList<Sprite> environment = new ArrayList<>();
+    private ArrayList<Sprite> environment;
+    String pathname;
     public Playground (String pathName) {
+        this.pathname = pathName;
+        this.environment = new ArrayList<Sprite>();
+        loadPlayground(pathName);
+    }
+
+    public void loadPlayground(String pathname) {
         try {
             final Image imageTree = ImageIO.read(new File("The assets-20260206/img/tree.png"));
             final Image imageGrass = ImageIO.read(new File("The assets-20260206/img/grass.png"));
@@ -24,7 +31,7 @@ public class Playground {
             final int imageRockWidth = imageRock.getWidth(null);
             final int imageRockHeight = imageRock.getHeight(null);
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(pathName));
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(pathname));
             String line = bufferedReader.readLine();
             int lineNumber = 0;
             int columnNumber = 0;
@@ -36,7 +43,7 @@ public class Playground {
                                     lineNumber * imageTreeHeight, imageTreeWidth, imageTreeHeight));
                             break;
                         case ' ', 'E':
-                            environment.add(new Sprite(imageGrass,columnNumber * imageGrassWidth,
+                            environment.add(new Sprite(imageGrass, columnNumber * imageGrassWidth,
                                     lineNumber * imageGrassHeight, imageGrassWidth, imageGrassHeight));
                             break;
                         case 'R':
@@ -53,6 +60,11 @@ public class Playground {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public void reload() {
+        environment.clear();        // remove old sprites
+        loadPlayground(this.pathname);
     }
 
     public ArrayList<Sprite> getSolidSpriteList(){

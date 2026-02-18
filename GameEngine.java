@@ -10,30 +10,49 @@ public class GameEngine implements Engine, KeyListener{
     private GameState gameState;
     private final DynamicSprite reference;
     PhysicEngine physicEngine;
+    RenderEngine renderEngine;
     StringBuilder levelString;
+    Playground playground;
+    private int score;
+    int rockAmount;
 
-    GameEngine(DynamicSprite reference, PhysicEngine physicEngine){
+    GameEngine(DynamicSprite reference, PhysicEngine physicEngine, Playground playground){
         this.physicEngine = physicEngine;
+        this.playground = playground;
         this.reference = reference;
         this.gameState = GameState.MENU;
         this.random = new Random();
+        this.score = 0;
+        this.rockAmount = 4;
         System.out.println(gameState);
     }
 
     @Override
     public void update() {
+        if(gameState == GameState.MENU){
+            score = 0;
+            rockAmount = 4;
+        }
         if (gameState == GameState.PLAYING) {
             physicEngine.update();
         }
         if (!reference.isWalking){
-            gameState = GameState.GAMEOVER;
+            setGameState(GameState.GAMEOVER);
+//            System.out.println(gameState);
         }
 
         if(reference.getPosX() > 400 && gameState == GameState.PLAYING){
-            gameState = GameState.TRANSITION;
+            setGameState(GameState.TRANSITION);
+//            System.out.println(gameState);
         }
+    }
 
-        reference.resetPos(gameState);
+    public int getScore(){
+        return score;
+    }
+
+    public void setRenderEngine(RenderEngine renderEngine){
+        this.renderEngine = renderEngine;
     }
 
     public void setGameState(GameState newState) {
@@ -41,7 +60,16 @@ public class GameEngine implements Engine, KeyListener{
         if (this.gameState != newState) {   // only if actually changing
             this.gameState = newState;
 
-            resetLevel();  // runs once per change
+            if(gameState == GameState.GAMEOVER){
+                score -= 1;
+                rockAmount = 5;
+            }
+            else if (gameState == GameState.TRANSITION){
+                score += 1;
+                rockAmount += 1;
+            }
+
+            resetLevel(rockAmount);  // runs once per change
         }
     }
 
@@ -58,7 +86,8 @@ public class GameEngine implements Engine, KeyListener{
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             this.gameState = GameState.PLAYING;
-            System.out.println(gameState);
+//            reference.resetPos(gameState);
+//            System.out.println(gameState);
         }
 
         switch(e.getKeyCode()){
@@ -96,7 +125,7 @@ public class GameEngine implements Engine, KeyListener{
             int rowRandIdx = random.nextInt(7) + 1;
             int columnRandIdx = random.nextInt(4) + 1;
 
-            if (container[rowRandIdx][columnRandIdx] != 'R' && !(rowRandIdx==4 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==3) && !(rowRandIdx==6 && columnRandIdx==3)) {
+            if (container[rowRandIdx][columnRandIdx] != 'R' && !(rowRandIdx==4 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==3) && !(rowRandIdx==6 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==4)) {
                 container[rowRandIdx][columnRandIdx] = 'R';
                 placed++;
             }
@@ -132,6 +161,27 @@ public class GameEngine implements Engine, KeyListener{
         } catch (Exception e){
             System.out.println("Error in file retrieval when resetting level");
         }
+
+        playground.reload();
+
+// --- Physics ---
+        physicEngine.setEnvironment(playground.getSolidSpriteList());
+
+// Ensure hero is still moving
+        physicEngine.clearMovingSpriteList();   // if you have this
+        reference.resetPos(gameState);
+        physicEngine.addToMovingSpriteList(reference);
+
+// --- Rendering ---
+        renderEngine.clearRenderList();
+
+        for (Displayable sprite : playground.getSpriteList()) {
+            renderEngine.addToRenderList(sprite);
+        }
+
+// VERY IMPORTANT
+        renderEngine.addToRenderList(reference);
+
     }
 }
 

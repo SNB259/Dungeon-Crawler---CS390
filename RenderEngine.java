@@ -19,6 +19,9 @@ public class RenderEngine extends JPanel implements Engine {
     public void addToRenderList(Displayable displayable){
         renderList.add(displayable);
     }
+    public void clearRenderList(){
+        renderList.clear();
+    }
 
     private void drawMenu(Graphics g) {
         g.setColor(Color.BLACK);
@@ -27,12 +30,12 @@ public class RenderEngine extends JPanel implements Engine {
 
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Game Over! Press SPACE to Try Again", 100, 300);
+        g.drawString("Game Over! Press SPACE to Try Again. Your score: " + gameEngine.getScore(), 30, 300);
     }
 
     private void drawTransition(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Congratulations! Press SPACE to Continue", 100, 300);
+        g.drawString("Congrats! Press SPACE to Continue. Your score: " + gameEngine.getScore(), 30, 300);
     }
 
     @Override

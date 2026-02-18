@@ -13,6 +13,10 @@ public class PhysicEngine implements Engine{
         this.movingSpriteList.add(movingSprite);
     }
 
+    public void clearMovingSpriteList(){
+        this.movingSpriteList.clear();
+    }
+
     public void setEnvironment(ArrayList<Sprite> environment){
         this.environment = environment;
     }

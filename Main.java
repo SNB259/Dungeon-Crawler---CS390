@@ -17,10 +17,11 @@ public class Main {
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
 
+        playground = new Playground("The assets-20260206/level/randLevel.txt");
         physicEngine = new PhysicEngine();
-        gameEngine = new GameEngine(hero, physicEngine);
+        gameEngine = new GameEngine(hero, physicEngine, playground);
         renderEngine = new RenderEngine(gameEngine);
-        playground = new Playground("The assets-20260206/level/level1.txt");
+        gameEngine.setRenderEngine(renderEngine);
 
         renderEngine.addToRenderList(hero);
 
