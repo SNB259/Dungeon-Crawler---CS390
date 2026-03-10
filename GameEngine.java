@@ -38,12 +38,10 @@ public class GameEngine implements Engine, KeyListener{
         }
         if (!reference.isWalking){
             setGameState(GameState.GAMEOVER);
-//            System.out.println(gameState);
         }
 
         if(reference.getPosX() > 400 && gameState == GameState.PLAYING){
             setGameState(GameState.TRANSITION);
-//            System.out.println(gameState);
         }
     }
 
@@ -61,7 +59,7 @@ public class GameEngine implements Engine, KeyListener{
             this.gameState = newState;
 
             if(gameState == GameState.GAMEOVER){
-                score -= 1;
+                score-=1;
                 rockAmount = 5;
             }
             else if (gameState == GameState.TRANSITION){
@@ -86,26 +84,20 @@ public class GameEngine implements Engine, KeyListener{
     public void keyPressed(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE){
             this.gameState = GameState.PLAYING;
-//            reference.resetPos(gameState);
-//            System.out.println(gameState);
         }
 
         switch(e.getKeyCode()){
             case KeyEvent.VK_UP:
                 reference.setDirection(Direction.NORTH);
-//                System.out.println(reference.direction);
                 break;
             case KeyEvent.VK_RIGHT:
                 reference.setDirection(Direction.EAST);
-//                System.out.println(reference.direction);
                 break;
             case KeyEvent.VK_LEFT:
                 reference.setDirection(Direction.WEST);
-//                System.out.println(reference.direction);
                 break;
             case KeyEvent.VK_DOWN:
                 reference.setDirection(Direction.SOUTH);
-//                System.out.println(reference.direction);
                 break;
         }
     }
@@ -121,7 +113,6 @@ public class GameEngine implements Engine, KeyListener{
         int placed = 0;
 
         while (placed < amount) {
-
             int rowRandIdx = random.nextInt(7) + 1;
             int columnRandIdx = random.nextInt(4) + 1;
 
@@ -152,9 +143,8 @@ public class GameEngine implements Engine, KeyListener{
             for (int j = 0; j < container[i].length; j++) {
                 levelString.append(container[i][j]);
             }
-            levelString.append("\n"); // very important
+            levelString.append("\n");
         }
-        System.out.println(levelString);
 
         try{
             Files.writeString(Path.of("The assets-20260206/level/randLevel.txt"), levelString);
@@ -164,33 +154,18 @@ public class GameEngine implements Engine, KeyListener{
 
         playground.reload();
 
-// --- Physics ---
         physicEngine.setEnvironment(playground.getSolidSpriteList());
 
-// Ensure hero is still moving
-        physicEngine.clearMovingSpriteList();   // if you have this
+        physicEngine.clearMovingSpriteList();
         reference.resetPos(gameState);
         physicEngine.addToMovingSpriteList(reference);
 
-// --- Rendering ---
         renderEngine.clearRenderList();
 
         for (Displayable sprite : playground.getSpriteList()) {
             renderEngine.addToRenderList(sprite);
         }
 
-// VERY IMPORTANT
         renderEngine.addToRenderList(reference);
-
     }
 }
-
-//TTTTTT
-//T    T
-//T R  T
-//T    E
-//T   RT
-//T    T
-//T    T
-//T  R T
-//TTTTTT

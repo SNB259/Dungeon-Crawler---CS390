@@ -20,7 +20,6 @@ public class Playground {
             final Image imageTree = ImageIO.read(new File("The assets-20260206/img/tree.png"));
             final Image imageGrass = ImageIO.read(new File("The assets-20260206/img/grass.png"));
             final Image imageRock = ImageIO.read(new File("The assets-20260206/img/rock.png"));
-            final Image imageTrap = ImageIO.read(new File("The assets-20260206/img/trap.png"));
 
             final int imageTreeWidth = imageTree.getWidth(null);
             final int imageTreeHeight = imageTree.getHeight(null);
@@ -63,7 +62,7 @@ public class Playground {
     }
 
     public void reload() {
-        environment.clear();        // remove old sprites
+        environment.clear();
         loadPlayground(this.pathname);
     }
 

@@ -59,12 +59,10 @@ public class RenderEngine extends JPanel implements Engine {
                 renderList.get(i).draw(g);
             }
         }
-
     }
 
     @Override
     public void update() {
-//        System.out.println("display");
         repaint();
     }
 }

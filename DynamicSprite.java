@@ -81,7 +81,6 @@ public class DynamicSprite extends SolidSprite{
                 }
             }
         }
-
         return true;
     }
 
@@ -103,6 +102,4 @@ public class DynamicSprite extends SolidSprite{
             this.setDirection(Direction.SOUTH);
         }
     }
-
-
 }

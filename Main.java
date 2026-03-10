@@ -40,7 +40,6 @@ public class Main {
         renderEngine.addToRenderList(hero);
         physicEngine.addToMovingSpriteList(hero);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
-//        gameEngine.resetLevel(5);
     }
 
     public static void main(String[] args) throws Exception {
