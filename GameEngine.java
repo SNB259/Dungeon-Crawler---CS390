@@ -15,6 +15,7 @@ public class GameEngine implements Engine, KeyListener{
     Playground playground;
     private int score;
     int rockAmount;
+//    private int chance;
 
     GameEngine(DynamicSprite reference, PhysicEngine physicEngine, Playground playground){
         this.physicEngine = physicEngine;
@@ -24,6 +25,7 @@ public class GameEngine implements Engine, KeyListener{
         this.random = new Random();
         this.score = 0;
         this.rockAmount = 4;
+//        this.chance = random.nextInt(2);
         System.out.println(gameState);
     }
 
@@ -40,9 +42,10 @@ public class GameEngine implements Engine, KeyListener{
             setGameState(GameState.GAMEOVER);
         }
 
-        if(reference.getPosX() > 400 && gameState == GameState.PLAYING){
+        if((reference.getPosX() > 400 || reference.getPosX() < 0 || reference.getPosY() > 600 || reference.getPosY() < 0) && gameState == GameState.PLAYING){
             setGameState(GameState.TRANSITION);
         }
+
     }
 
     public int getScore(){
@@ -137,7 +140,28 @@ public class GameEngine implements Engine, KeyListener{
                 }
             }
         }
-        container[5][5] = 'E';
+
+        int preRowIdx = random.nextInt(7) + 1;
+        int preColIdx = random.nextInt(4)+ 1;
+        int chance = random.nextInt(2);
+        int sndChance = random.nextInt(2);
+
+        if (chance == 0){
+            if (sndChance == 0){
+                container[0][preColIdx] = 'E';
+            }
+            else {
+                container[8][preColIdx] = 'E';
+            }
+        }
+        else{
+            if (sndChance == 0){
+                container[preRowIdx][0] = 'E';
+            }
+            else {
+                container[preRowIdx][5] = 'E';
+            }
+        }
 
         for (int i = 0; i < container.length; i++) {
             for (int j = 0; j < container[i].length; j++) {
