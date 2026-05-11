@@ -115,7 +115,7 @@ public class GameEngine implements Engine, KeyListener{
     }
 
     public void resetLevel(int amount){
-        char[][] container = new char[9][6];
+        char[][] container = new char[6][9];
         levelString = new StringBuilder();
         int placed = 0;
 

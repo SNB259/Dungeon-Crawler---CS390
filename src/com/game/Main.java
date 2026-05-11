@@ -14,7 +14,7 @@ public class Main {
 
     public Main() throws Exception {
         displayZoneFrame = new JFrame("Java Labs");
-        displayZoneFrame.setSize(400, 600);
+        displayZoneFrame.setSize(500, 500);
         displayZoneFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
