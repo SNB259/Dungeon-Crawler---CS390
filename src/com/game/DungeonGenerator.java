@@ -1,5 +1,7 @@
 package com.game;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Random;
 
@@ -22,12 +24,13 @@ public class DungeonGenerator {
     public Room[][] generateDungeon(){
 
         //pick random wall to attach entry
-        DungeonDirection[] walls = DungeonDirection.values();
-        DungeonDirection entryWall = walls[random.nextInt(4)];
+        DungeonDirection[] directions = DungeonDirection.values();
+        DungeonDirection entryWall = directions[random.nextInt(4)];
 
         int entryX;
         int entryY;
 
+        //wall logic
         switch(entryWall){
             case NORTH:
                 entryX = 0;
@@ -56,20 +59,54 @@ public class DungeonGenerator {
         this.grid[entryX][entryY] = entryRoom;
         this.queue.add(entryRoom);
         roomCount += 1;
-        
+
+        ArrayList<DungeonDirection> freeDirections = new ArrayList<>();
+
+        //loop to decide available expansion directions and adding rooms to queue
+        while(!this.queue.isEmpty() && roomCount<roomMin){
+
+            Room current = queue.pollFirst();
+
+            for(DungeonDirection direction : directions){
+                int neighborRow = current.getGridX() + direction.getDx();
+                int neighborColumn = current.getGridY() + direction.getDy();
+
+                if(neighborRow >= 0 && neighborRow <= 4 && neighborColumn >= 0 && neighborColumn <= 4 && grid[neighborRow][neighborColumn] == null){
+                    freeDirections.add(direction);
+                }
+            }
+            if(freeDirections.isEmpty()) continue;
+
+            int branches = random.nextInt(freeDirections.size()) + 1;
+            Collections.shuffle(freeDirections);
+
+            for(int i=0; i<branches; i++){
+                Room newRoom = new Room(current.getGridX() + freeDirections.get(i).getDx(), current.getGridY() + freeDirections.get(i).getDy());
+                newRoom.setDistanceFromEntry(current.getDistanceFromEntry() + 1);
+                current.addNeighbor(freeDirections.get(i), newRoom);
+                newRoom.addNeighbor(freeDirections.get(i).getOpposite(), current);
+                queue.addLast(newRoom);
+                grid[newRoom.getGridX()][newRoom.getGridY()] = newRoom;
+                roomCount += 1;
+            }
+
+            freeDirections.clear();
+        }
+
+        Room exitRoom = null;
+        for(int row = 0; row < grid.length; row++){
+            for(int col = 0; col < grid[row].length; col++){
+                if(grid[row][col] != null){
+                    if(exitRoom == null || grid[row][col].getDistanceFromEntry() > exitRoom.getDistanceFromEntry()){
+                        exitRoom = grid[row][col];
+                    }
+                }
+            }
+        }
+//        assert exitRoom != null;
+        exitRoom.setExit(true);
+
         return this.grid;
     }
-
-    private boolean wallCheck(Room[][]grid, int roomX, int roomY){
-        boolean isWall = false;
-
-        if ((roomX+1) > 4 || (roomX-1) < 0){
-            isWall = true;
-        }
-        if ((roomY+1) > 4 || (roomY-1) < 0){
-
-        }
-
-        return isWall;
-    }
+    
 }

@@ -1,9 +1,11 @@
 package com.game;
 
+import java.util.HashMap;
+
 public class Room {
 
     private int gridX, gridY;
-    private Room[] neighbors;
+    private HashMap<DungeonDirection, Room> neighbors;
     private boolean[] doors;
     private int distanceFromEntry;
     private boolean isEntry, isExit;
@@ -11,7 +13,7 @@ public class Room {
     public Room(int x, int y){
         this.gridX = x;
         this.gridY = y;
-        this.neighbors = new Room[4];
+        this.neighbors = new HashMap<>();
         this.doors = new boolean[4];
     }
 
@@ -27,8 +29,12 @@ public class Room {
         isExit = exit;
     }
 
-    public void setNeighbors(Room[] neighbors) {
+    public void setNeighbors(HashMap<DungeonDirection, Room> neighbors) {
         this.neighbors = neighbors;
+    }
+
+    public void addNeighbor(DungeonDirection direction, Room neighbor){
+        this.neighbors.put(direction, neighbor);
     }
 
     public int getGridX() {
