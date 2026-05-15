@@ -1,9 +1,7 @@
 package com.game;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.File;
@@ -11,18 +9,27 @@ import java.io.File;
 public class Playground {
     private ArrayList<Sprite> environment;
     private Room room;
+    private int enemyCount;
+    private ArrayList<Enemy> enemies;
+    private Random random;
+    private DynamicSprite hero;
 
-    public Playground (Room room) {
+    public Playground (Room room, int enemyCount, DynamicSprite hero) {
         this.environment = new ArrayList<Sprite>();
         this.room = room;
-        loadPlayground(room);
+        this.enemyCount = enemyCount;
+        this.enemies = new ArrayList<Enemy>();
+        this.random = new Random();
+        this.hero = hero;
+        loadPlayground(room, enemyCount);
     }
 
-    public void loadPlayground(Room room) {
+    public void loadPlayground(Room room, int enemyCount) {
         try {
             final Image imageTree = ImageIO.read(new File("The assets-20260206/img/tree.png"));
             final Image imageGrass = ImageIO.read(new File("The assets-20260206/img/grass.png"));
             final Image imageRock = ImageIO.read(new File("The assets-20260206/img/rock.png"));
+            final Image imageEnemy = ImageIO.read(new File("The assets-20260206/img/purpleGoblinSpriteSheet.png"));
 
             final int imageTreeWidth = imageTree.getWidth(null);
             final int imageTreeHeight = imageTree.getHeight(null);
@@ -43,6 +50,13 @@ public class Playground {
             boolean doorWest  = room.getNeighbors().containsKey(DungeonDirection.WEST);
             boolean doorEast  = room.getNeighbors().containsKey(DungeonDirection.EAST);
 
+            System.out.println("Loading room at: " + room.getGridX() + "," + room.getGridY());
+            System.out.println("doorNorth: " + doorNorth);
+            System.out.println("doorSouth: " + doorSouth);
+            System.out.println("doorEast: "  + doorEast);
+            System.out.println("doorWest: "  + doorWest);
+            System.out.println("neighbor count: " + room.getNeighbors().size());
+
             for(int row=0; row<roomGrid.length; row++){
                 for(int col=0; col<roomGrid[row].length; col++){
                     if(row == 0 || row == 8 || col == 0 || col == 8){
@@ -61,13 +75,34 @@ public class Playground {
                 }
             }
 
+            if(!room.isEntry()) {
+                for (int i = 0; i < enemyCount; i++) {
+                    int spawnX = random.nextInt(7) + 1;
+                    int spawnY = random.nextInt(7) + 1;
+                    //adapting to enemy's 64x64 size in spritesheet
+                    int posX = spawnX * 64;
+                    int posY = spawnY * 64;
+                    Enemy enemy = new Enemy(this.hero, imageEnemy, posX, posY, 96, 96);
+                    this.enemies.add(enemy);
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void removeDeadEnemies(){
+        enemies.removeIf(e -> e.getHealth() <= 0);
+    }
+
     public void reload() {
         environment.clear();
+        enemies.clear();
+    }
+
+    public ArrayList<Enemy> getEnemies() {
+        return enemies;
     }
 
     public ArrayList<Sprite> getSolidSpriteList(){

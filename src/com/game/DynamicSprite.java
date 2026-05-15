@@ -11,13 +11,19 @@ public class DynamicSprite extends SolidSprite {
     final int spriteSheetNumberOfColumn = 10;
     int timeBetweenFrame;
     Direction direction;
+    private int health;
+    private boolean isInvincible;
+    int invincibilityCounter;
+    final int invincibilityDuration = 30;
 
     DynamicSprite(Image image, double posX, double posY, double sizeX, double sizeY){
         super(image, posX, posY, sizeX, sizeY);
         this.isWalking = true;
-        this.speed = 5;
+        this.speed = 6;
         this.timeBetweenFrame = 200;
         this.direction = Direction.SOUTH;
+        this.health = 10;
+        this.isInvincible = false;
     }
 
     public void setDirection(Direction direction){
@@ -26,6 +32,14 @@ public class DynamicSprite extends SolidSprite {
 
     public Direction getDirection() {
         return direction;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public boolean isInvincible() {
+        return isInvincible;
     }
 
     @Override
@@ -90,7 +104,23 @@ public class DynamicSprite extends SolidSprite {
         return true;
     }
 
+    public void takeDamage(int amount){
+        if(!isInvincible){
+            health -= amount;
+            isInvincible = true;
+            invincibilityCounter = 0;
+        }
+    }
+
     public void moveIfPossible(ArrayList<Sprite> environment){
+
+        if(isInvincible){
+            invincibilityCounter++;
+            if(invincibilityCounter >= invincibilityDuration){
+                isInvincible = false;
+            }
+        }
+
         if(isMovingPossible(environment)){
             move();
             isWalking = true;

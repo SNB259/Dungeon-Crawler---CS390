@@ -14,7 +14,6 @@ public class GameEngine implements Engine, KeyListener{
     private Room[][] dungeonGrid;
     private Room currentRoom;
     private final DynamicSprite reference;
-//    private final DynamicSprite goblinReference;
     PhysicEngine physicEngine;
     RenderEngine renderEngine;
     Playground playground;
@@ -37,13 +36,11 @@ public class GameEngine implements Engine, KeyListener{
         if (gameState == GameState.PLAYING) {
             physicEngine.update();
         }
-//        if (!reference.isWalking){
-//            setGameState(GameState.GAMEOVER);
-//        }
 
         if((reference.getPosX() > 576 || reference.getPosX() < 0 || reference.getPosY() > 600 || reference.getPosY() < 0) && gameState == GameState.PLAYING){
             setGameState(GameState.TRANSITION);
         }
+        playground.removeDeadEnemies();
     }
 
     public void setRenderEngine(RenderEngine renderEngine){
@@ -107,11 +104,15 @@ public class GameEngine implements Engine, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_SPACE){
-            this.gameState = GameState.PLAYING;
-        }
+//        if(e.getKeyCode() == KeyEvent.VK_SPACE){
+//            this.gameState = GameState.PLAYING;
+//        }
 
         switch(e.getKeyCode()){
+            //DEBUG!!!
+            case KeyEvent.VK_SPACE:
+                this.gameState = GameState.PLAYING;
+                break;
             case KeyEvent.VK_UP:
                 reference.setDirection(Direction.NORTH);
                 break;
@@ -124,6 +125,20 @@ public class GameEngine implements Engine, KeyListener{
             case KeyEvent.VK_DOWN:
                 reference.setDirection(Direction.SOUTH);
                 break;
+            case KeyEvent.VK_S:
+                performAttack();
+                break;
+        }
+    }
+
+    public void performAttack(){
+        for(Enemy enemy: playground.getEnemies()){
+            double deltaX = enemy.getPosX() - reference.getPosX();
+            double deltaY = enemy.getPosY() - reference.getPosY();
+            double distance = Math.sqrt(Math.pow(deltaX, 2)+Math.pow(deltaY, 2));
+            if(distance < 80){
+                enemy.takeHit();
+            }
         }
     }
 
@@ -149,15 +164,21 @@ public class GameEngine implements Engine, KeyListener{
     public void loadRoom(Room room){
 
         playground.reload();
-        playground.loadPlayground(room);
+        playground.loadPlayground(room, 3);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
         renderEngine.clearRenderList();
         for(Displayable sprite : playground.getSpriteList()){
             renderEngine.addToRenderList(sprite);
         }
         renderEngine.addToRenderList(reference);
+        for(int i=0; i<playground.getEnemies().size(); i++) {
+            renderEngine.addToRenderList(playground.getEnemies().get(i));
+        }
         physicEngine.clearMovingSpriteList();
         physicEngine.addToMovingSpriteList(reference);
+        for(int i=0; i<playground.getEnemies().size(); i++) {
+            physicEngine.addToMovingSpriteList(playground.getEnemies().get(i));
+        }
     }
 
 }

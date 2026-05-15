@@ -20,7 +20,7 @@ public class Main {
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
 //        DynamicSprite goblin = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/purpleGoblinSpriteSheet.png")),200,300, 48,50);
 
-        DungeonGenerator dungeonGenerator = new DungeonGenerator(5, 5, 8);
+        DungeonGenerator dungeonGenerator = new DungeonGenerator(5, 5, 8 );
         Room [][] dungeonGrid = dungeonGenerator.generateDungeon();
 
         Room entryRoom = null;
@@ -32,7 +32,7 @@ public class Main {
             }
         }
 
-        playground = new Playground(entryRoom);
+        playground = new Playground(entryRoom, 3, hero);
         physicEngine = new PhysicEngine();
         gameEngine = new GameEngine(hero, physicEngine, playground, dungeonGrid, entryRoom);
         renderEngine = new RenderEngine(gameEngine);

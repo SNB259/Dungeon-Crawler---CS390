@@ -22,9 +22,9 @@ public class DungeonGenerator {
     }
 
     public Room[][] generateDungeon(){
-        this.grid = new Room[grid.length][grid[0].length];
-        this.queue.clear();
-        this.roomCount = 0;
+//        this.grid = new Room[grid.length][grid[0].length];
+//        this.queue.clear();
+//        this.roomCount = 0;
 
         //pick random wall to attach entry
         DungeonDirection[] directions = DungeonDirection.values();
@@ -71,8 +71,8 @@ public class DungeonGenerator {
             Room current = queue.pollFirst();
 
             for(DungeonDirection direction : directions){
-                int neighborRow = current.getGridX() + direction.getDx();
-                int neighborColumn = current.getGridY() + direction.getDy();
+                int neighborRow = current.getGridX() + direction.getDy();
+                int neighborColumn = current.getGridY() + direction.getDx();
 
                 if(neighborRow >= 0 && neighborRow <= 4 && neighborColumn >= 0 && neighborColumn <= 4 && grid[neighborRow][neighborColumn] == null){
                     freeDirections.add(direction);
@@ -84,7 +84,7 @@ public class DungeonGenerator {
             Collections.shuffle(freeDirections);
 
             for(int i=0; i<branches; i++){
-                Room newRoom = new Room(current.getGridX() + freeDirections.get(i).getDx(), current.getGridY() + freeDirections.get(i).getDy());
+                Room newRoom = new Room(current.getGridX() + freeDirections.get(i).getDy(), current.getGridY() + freeDirections.get(i).getDx());
                 newRoom.setDistanceFromEntry(current.getDistanceFromEntry() + 1);
                 current.addNeighbor(freeDirections.get(i), newRoom);
                 newRoom.addNeighbor(freeDirections.get(i).getOpposite(), current);
@@ -94,23 +94,6 @@ public class DungeonGenerator {
             }
 
             freeDirections.clear();
-        }
-
-        for(int row = 0; row < grid.length; row++){
-            for(int col = 0; col < grid[row].length; col++){
-                if(grid[row][col] != null){
-                    for(DungeonDirection dir : DungeonDirection.values()){
-                        int nRow = row + dir.getDy();
-                        int nCol = col + dir.getDx();
-                        if(nRow >= 0 && nRow <= 4 && nCol >= 0 && nCol <= 4){
-                            if(grid[nRow][nCol] != null && !grid[row][col].getNeighbors().containsKey(dir)){
-                                grid[row][col].addNeighbor(dir, grid[nRow][nCol]);
-                                grid[nRow][nCol].addNeighbor(dir.getOpposite(), grid[row][col]);
-                            }
-                        }
-                    }
-                }
-            }
         }
 
         Room exitRoom = null;
