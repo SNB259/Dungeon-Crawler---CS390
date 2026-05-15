@@ -45,7 +45,7 @@ public class Room {
         return gridY;
     }
 
-    public Room[] getNeighbors() {
+    public HashMap<DungeonDirection, Room> getNeighbors() {
         return neighbors;
     }
 

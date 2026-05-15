@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 public class RenderEngine extends JPanel implements Engine {
 
-    private ArrayList<Displayable> renderList = new ArrayList<Displayable>();
+    private ArrayList<Displayable> renderList;
     private GameEngine gameEngine;
 
     public RenderEngine(GameEngine gameEngine) {
-        this.renderList = renderList;
+        this.renderList = new ArrayList<Displayable>();
         this.gameEngine = gameEngine;
     }
 
@@ -32,12 +32,12 @@ public class RenderEngine extends JPanel implements Engine {
 
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Game Over! Press SPACE to Try Again. Your score: " + gameEngine.getScore(), 30, 300);
+        g.drawString("Game Over! Press SPACE to Try Again", 30, 300);
     }
 
     private void drawTransition(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Congrats! Press SPACE to Continue. Your score: " + gameEngine.getScore(), 30, 300);
+        g.drawString("Congrats! Press SPACE to Continue", 30, 300);
     }
 
     @Override

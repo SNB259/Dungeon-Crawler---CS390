@@ -24,6 +24,10 @@ public class DynamicSprite extends SolidSprite {
         this.direction = direction;
     }
 
+    public Direction getDirection() {
+        return direction;
+    }
+
     @Override
     public void draw(Graphics g){
         int index = (int)((System.currentTimeMillis()/timeBetweenFrame)%spriteSheetNumberOfColumn);
@@ -99,8 +103,10 @@ public class DynamicSprite extends SolidSprite {
 
     public void resetPos(GameState gameState){
         if(gameState == GameState.GAMEOVER || gameState == GameState.TRANSITION){
-            this.setPosX(200);
-            this.setPosY(300);
+            this.setPosX(333);
+            this.setPosY(333);
+
+
             this.setDirection(Direction.SOUTH);
         }
     }

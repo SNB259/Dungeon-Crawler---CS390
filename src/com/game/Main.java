@@ -14,20 +14,31 @@ public class Main {
 
     public Main() throws Exception {
         displayZoneFrame = new JFrame("Java Labs");
-        displayZoneFrame.setSize(500, 500);
+        displayZoneFrame.setSize(576, 600);
         displayZoneFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
-        DynamicSprite goblin = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/purpleGoblinSpriteSheet.png")),200,300, 48,50);
+//        DynamicSprite goblin = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/purpleGoblinSpriteSheet.png")),200,300, 48,50);
 
-        playground = new Playground("The assets-20260206/level/randLevel.txt");
+        DungeonGenerator dungeonGenerator = new DungeonGenerator(5, 5, 8);
+        Room [][] dungeonGrid = dungeonGenerator.generateDungeon();
+
+        Room entryRoom = null;
+        for(int row=0; row<dungeonGrid.length; row++){
+            for(int col=0; col<dungeonGrid[row].length; col++){
+                if(dungeonGrid[row][col]!=null && dungeonGrid[row][col].isEntry()){
+                    entryRoom = dungeonGrid[row][col];
+                }
+            }
+        }
+
+        playground = new Playground(entryRoom);
         physicEngine = new PhysicEngine();
-        gameEngine = new GameEngine(hero, goblin, physicEngine, playground);
+        gameEngine = new GameEngine(hero, physicEngine, playground, dungeonGrid, entryRoom);
         renderEngine = new RenderEngine(gameEngine);
         gameEngine.setRenderEngine(renderEngine);
 
         renderEngine.addToRenderList(hero);
-        renderEngine.addToRenderList(goblin);
 
         Timer renderTimer = new Timer(50, (time) -> renderEngine.update());
         renderTimer.start();
@@ -41,10 +52,11 @@ public class Main {
         for(int i=0; i<playground.getSpriteList().size(); i++){
             renderEngine.addToRenderList(playground.getSpriteList().get(i));
         }
+        //Why?? redundant?
         renderEngine.addToRenderList(hero);
-        renderEngine.addToRenderList(goblin);
+//        renderEngine.addToRenderList(goblin);
         physicEngine.addToMovingSpriteList(hero);
-        physicEngine.addToMovingSpriteList(goblin);
+//        physicEngine.addToMovingSpriteList(goblin);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
     }
 

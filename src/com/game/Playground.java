@@ -10,14 +10,15 @@ import java.io.File;
 
 public class Playground {
     private ArrayList<Sprite> environment;
-    String pathname;
-    public Playground (String pathName) {
-        this.pathname = pathName;
+    private Room room;
+
+    public Playground (Room room) {
         this.environment = new ArrayList<Sprite>();
-        loadPlayground(pathName);
+        this.room = room;
+        loadPlayground(room);
     }
 
-    public void loadPlayground(String pathname) {
+    public void loadPlayground(Room room) {
         try {
             final Image imageTree = ImageIO.read(new File("The assets-20260206/img/tree.png"));
             final Image imageGrass = ImageIO.read(new File("The assets-20260206/img/grass.png"));
@@ -32,32 +33,34 @@ public class Playground {
             final int imageRockWidth = imageRock.getWidth(null);
             final int imageRockHeight = imageRock.getHeight(null);
 
-            BufferedReader bufferedReader = new BufferedReader(new FileReader(pathname));
-            String line = bufferedReader.readLine();
-            int lineNumber = 0;
-            int columnNumber = 0;
-            while (line != null) {
-                for (byte element : line.getBytes(StandardCharsets.UTF_8)) {
-                    switch (element) {
-                        case 'T':
-                            environment.add(new SolidSprite(imageTree, columnNumber * imageTreeWidth,
-                                    lineNumber * imageTreeHeight, imageTreeWidth, imageTreeHeight));
-                            break;
-                        case ' ', 'E':
-                            environment.add(new Sprite(imageGrass, columnNumber * imageGrassWidth,
-                                    lineNumber * imageGrassHeight, imageGrassWidth, imageGrassHeight));
-                            break;
-                        case 'R':
-                            environment.add(new SolidSprite(imageRock, columnNumber * imageRockWidth,
-                                    lineNumber * imageRockHeight, imageRockWidth, imageRockHeight));
-                            break;
+            //Room construction
+
+            int[][] roomGrid = new int[9][9];
+
+            //Extracting doors (middle point of walls that connect to another room)
+            boolean doorNorth = room.getNeighbors().containsKey(DungeonDirection.NORTH);
+            boolean doorSouth = room.getNeighbors().containsKey(DungeonDirection.SOUTH);
+            boolean doorWest  = room.getNeighbors().containsKey(DungeonDirection.WEST);
+            boolean doorEast  = room.getNeighbors().containsKey(DungeonDirection.EAST);
+
+            for(int row=0; row<roomGrid.length; row++){
+                for(int col=0; col<roomGrid[row].length; col++){
+                    if(row == 0 || row == 8 || col == 0 || col == 8){
+
+                        boolean isDoor = (row == 0 && col == 4 && doorNorth) || (row == 8 && col == 4 && doorSouth) || (col == 0 && row == 4 && doorWest)  || (col == 8 && row == 4 && doorEast);
+
+                        if(isDoor){
+                            environment.add(new Sprite(imageGrass, col * imageGrassWidth, row * imageGrassHeight, imageGrassWidth, imageGrassHeight));
+                        } else {
+                            environment.add(new SolidSprite(imageTree, col * imageTreeWidth, row * imageTreeHeight, imageTreeWidth, imageTreeHeight));
+                        }
                     }
-                    columnNumber++;
+                    else{
+                        environment.add(new Sprite(imageGrass, col * imageGrassWidth, row * imageGrassHeight, imageGrassWidth, imageGrassHeight));
+                    }
                 }
-                columnNumber = 0;
-                lineNumber++;
-                line = bufferedReader.readLine();
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -65,7 +68,6 @@ public class Playground {
 
     public void reload() {
         environment.clear();
-        loadPlayground(this.pathname);
     }
 
     public ArrayList<Sprite> getSolidSpriteList(){

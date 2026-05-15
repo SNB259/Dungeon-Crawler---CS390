@@ -10,50 +10,40 @@ public class GameEngine implements Engine, KeyListener{
 
     public Random random;
     private GameState gameState;
+    private DungeonGenerator dungeonGenerator;
+    private Room[][] dungeonGrid;
+    private Room currentRoom;
     private final DynamicSprite reference;
-    private final DynamicSprite goblinReference;
+//    private final DynamicSprite goblinReference;
     PhysicEngine physicEngine;
     RenderEngine renderEngine;
-    StringBuilder levelString;
     Playground playground;
-    private int score;
-    int rockAmount;
-//    private int chance;
 
-    GameEngine(DynamicSprite reference, DynamicSprite goblinReference, PhysicEngine physicEngine, Playground playground){
+    GameEngine(DynamicSprite reference, PhysicEngine physicEngine, Playground playground, Room[][] dungeonGrid, Room currentRoom){
         this.physicEngine = physicEngine;
         this.playground = playground;
         this.reference = reference;
-        this.goblinReference = goblinReference;
+        this.dungeonGrid = dungeonGrid;
+        this.currentRoom = currentRoom;
         this.gameState = GameState.MENU;
         this.random = new Random();
-        this.score = 0;
-        this.rockAmount = 4;
-//        this.chance = random.nextInt(2);
-        System.out.println(gameState);
     }
 
     @Override
     public void update() {
         if(gameState == GameState.MENU){
-            score = 0;
-            rockAmount = 4;
+
         }
         if (gameState == GameState.PLAYING) {
             physicEngine.update();
         }
-        if (!reference.isWalking){
-            setGameState(GameState.GAMEOVER);
-        }
+//        if (!reference.isWalking){
+//            setGameState(GameState.GAMEOVER);
+//        }
 
-        if((reference.getPosX() > 400 || reference.getPosX() < 0 || reference.getPosY() > 600 || reference.getPosY() < 0) && gameState == GameState.PLAYING){
+        if((reference.getPosX() > 576 || reference.getPosX() < 0 || reference.getPosY() > 600 || reference.getPosY() < 0) && gameState == GameState.PLAYING){
             setGameState(GameState.TRANSITION);
         }
-
-    }
-
-    public int getScore(){
-        return score;
     }
 
     public void setRenderEngine(RenderEngine renderEngine){
@@ -64,17 +54,45 @@ public class GameEngine implements Engine, KeyListener{
 
         if (this.gameState != newState) {   // only if actually changing
             this.gameState = newState;
+            if(gameState == GameState.PLAYING){
+
+            }
 
             if(gameState == GameState.GAMEOVER){
-                score-=1;
-                rockAmount = 5;
+
             }
             else if (gameState == GameState.TRANSITION){
-                score += 1;
-                rockAmount += 1;
-            }
+                DungeonDirection heroDirection = toDungeonDirection(reference.getDirection());
+                Room nextRoom = this.currentRoom.getNeighbors().get(heroDirection);
 
-            resetLevel(rockAmount);  // runs once per change
+                if(nextRoom != null){
+                    loadRoom(nextRoom);
+                    this.currentRoom = nextRoom;
+                }
+
+                switch (heroDirection){
+                    case NORTH:
+                        reference.setDirection(Direction.NORTH);
+                        reference.setPosX(256);
+                        reference.setPosY(512);
+                        break;
+                    case SOUTH:
+                        reference.setDirection(Direction.SOUTH);
+                        reference.setPosX(256);
+                        reference.setPosY(64);
+                        break;
+                    case EAST:
+                        reference.setDirection(Direction.EAST);
+                        reference.setPosX(64);
+                        reference.setPosY(256);
+                        break;
+                    case WEST:
+                        reference.setDirection(Direction.WEST);
+                        reference.setPosX(512);
+                        reference.setPosY(256);
+                        break;
+                }
+            }
         }
     }
 
@@ -114,86 +132,32 @@ public class GameEngine implements Engine, KeyListener{
 
     }
 
-    public void resetLevel(int amount){
-        char[][] container = new char[6][9];
-        levelString = new StringBuilder();
-        int placed = 0;
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
 
-        while (placed < amount) {
-            int rowRandIdx = random.nextInt(7) + 1;
-            int columnRandIdx = random.nextInt(4) + 1;
-
-            if (container[rowRandIdx][columnRandIdx] != 'R' && !(rowRandIdx==4 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==3) && !(rowRandIdx==6 && columnRandIdx==3) && !(rowRandIdx==5 && columnRandIdx==4)) {
-                container[rowRandIdx][columnRandIdx] = 'R';
-                placed++;
-            }
+    private DungeonDirection toDungeonDirection(Direction dir){
+        switch(dir){
+            case NORTH: return DungeonDirection.NORTH;
+            case SOUTH: return DungeonDirection.SOUTH;
+            case EAST:  return DungeonDirection.EAST;
+            case WEST:  return DungeonDirection.WEST;
+            default: throw new IllegalStateException();
         }
+    }
 
-        for(int i=0; i< container.length; i++){
-            for(int j=0; j<container[i].length; j++){
-                if(i==0 || i==8){
-                    container[i][j] = 'T';
-                }
-                else {
-
-                    container[i][0] = 'T';
-                    container[i][5] = 'T';
-                    if(container[i][j] != 'T' && container[i][j] != 'R'){
-                        container[i][j] = ' ';
-                    }
-                }
-            }
-        }
-
-        int preRowIdx = random.nextInt(7) + 1;
-        int preColIdx = random.nextInt(4)+ 1;
-        int chance = random.nextInt(2);
-        int sndChance = random.nextInt(2);
-
-        if (chance == 0){
-            if (sndChance == 0){
-                container[0][preColIdx] = 'E';
-            }
-            else {
-                container[8][preColIdx] = 'E';
-            }
-        }
-        else{
-            if (sndChance == 0){
-                container[preRowIdx][0] = 'E';
-            }
-            else {
-                container[preRowIdx][5] = 'E';
-            }
-        }
-
-        for (int i = 0; i < container.length; i++) {
-            for (int j = 0; j < container[i].length; j++) {
-                levelString.append(container[i][j]);
-            }
-            levelString.append("\n");
-        }
-
-        try{
-            Files.writeString(Path.of("The assets-20260206/level/randLevel.txt"), levelString);
-        } catch (Exception e){
-            System.out.println("Error in file retrieval when resetting level");
-        }
+    public void loadRoom(Room room){
 
         playground.reload();
-
+        playground.loadPlayground(room);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
-
-        physicEngine.clearMovingSpriteList();
-        reference.resetPos(gameState);
-        physicEngine.addToMovingSpriteList(reference);
-
         renderEngine.clearRenderList();
-
-        for (Displayable sprite : playground.getSpriteList()) {
+        for(Displayable sprite : playground.getSpriteList()){
             renderEngine.addToRenderList(sprite);
         }
-
         renderEngine.addToRenderList(reference);
+        physicEngine.clearMovingSpriteList();
+        physicEngine.addToMovingSpriteList(reference);
     }
+
 }

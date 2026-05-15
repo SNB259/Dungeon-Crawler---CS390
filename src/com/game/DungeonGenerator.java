@@ -22,6 +22,9 @@ public class DungeonGenerator {
     }
 
     public Room[][] generateDungeon(){
+        this.grid = new Room[grid.length][grid[0].length];
+        this.queue.clear();
+        this.roomCount = 0;
 
         //pick random wall to attach entry
         DungeonDirection[] directions = DungeonDirection.values();
@@ -93,6 +96,23 @@ public class DungeonGenerator {
             freeDirections.clear();
         }
 
+        for(int row = 0; row < grid.length; row++){
+            for(int col = 0; col < grid[row].length; col++){
+                if(grid[row][col] != null){
+                    for(DungeonDirection dir : DungeonDirection.values()){
+                        int nRow = row + dir.getDy();
+                        int nCol = col + dir.getDx();
+                        if(nRow >= 0 && nRow <= 4 && nCol >= 0 && nCol <= 4){
+                            if(grid[nRow][nCol] != null && !grid[row][col].getNeighbors().containsKey(dir)){
+                                grid[row][col].addNeighbor(dir, grid[nRow][nCol]);
+                                grid[nRow][nCol].addNeighbor(dir.getOpposite(), grid[row][col]);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         Room exitRoom = null;
         for(int row = 0; row < grid.length; row++){
             for(int col = 0; col < grid[row].length; col++){
@@ -106,7 +126,21 @@ public class DungeonGenerator {
 //        assert exitRoom != null;
         exitRoom.setExit(true);
 
+        printGrid();
         return this.grid;
     }
-    
+
+    public void printGrid(){
+        for(int row = 0; row < grid.length; row++){
+            for(int col = 0; col < grid[row].length; col++){
+                if(grid[row][col] == null)            System.out.print(" .  ");
+                else if(grid[row][col].isEntry())     System.out.print("[S] ");
+                else if(grid[row][col].isExit())      System.out.print("[E] ");
+                else                                   System.out.print("[R] ");
+            }
+            System.out.println();
+        }
+        System.out.println("Total rooms: " + roomCount);
+    }
+
 }
