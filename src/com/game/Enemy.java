@@ -20,6 +20,7 @@ public class Enemy extends DynamicSprite{
     private boolean isStunned;
     private int stunCounter;
     private int stunDuration;
+    private boolean isBoss;
 
     public Enemy(DynamicSprite hero, Image image, double posX, double posY, double sizeX, double sizeY){
         super(image, posX, posY, sizeX, sizeY);
@@ -36,6 +37,23 @@ public class Enemy extends DynamicSprite{
         this.isStunned = false;
         this.stunCounter = 0;
         this.stunDuration = 30;
+        this.isBoss = false;
+    }
+
+    public boolean isBoss() {
+        return isBoss;
+    }
+
+    public void setBoss(boolean boss) {
+        isBoss = boss;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
 
     @Override
@@ -99,8 +117,9 @@ public class Enemy extends DynamicSprite{
                         setDirection(Direction.NORTH);
                     }
                 }
-
-                attack();
+                if(!isStunned) {
+                    attack();
+                }
             }
         }
 
@@ -108,16 +127,18 @@ public class Enemy extends DynamicSprite{
     }
 
     public void takeHit(){
-        health -= 1;
-        isStunned = true;
-        stunCounter = 0;
+        if(!isStunned) {
+            health -= 1;
+            isStunned = true;
+            stunCounter = 0;
+        }
     }
 
     public void attack(){
         double deltaX = this.hero.getPosX() - this.getPosX();
         double deltaY = this.hero.getPosY() - this.getPosY();
         double distance = Math.sqrt(Math.pow(deltaX, 2)+Math.pow(deltaY, 2));
-        if(distance < 70){
+        if(distance < 50){
             this.hero.takeDamage(damage);
         }
     }

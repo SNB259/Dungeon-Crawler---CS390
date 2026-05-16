@@ -25,19 +25,38 @@ public class RenderEngine extends JPanel implements Engine {
         renderList.clear();
     }
 
+    private void drawCenteredString(Graphics g, String text, int y){
+        FontMetrics fm = g.getFontMetrics();
+        int textWidth = fm.stringWidth(text);
+        int x = (getWidth() - textWidth) / 2;
+        g.drawString(text, x, y);
+    }
+
     private void drawMenu(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Welcome! Press SPACE to Start", 100, 300);
+        drawCenteredString(g, "Welcome! Press SPACE to Start", 300);
     }
 
     private void drawGameOver(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Game Over! Press SPACE to Try Again", 30, 300);
+        drawCenteredString(g, "Game Over! Press SPACE to Try Again", 300);
     }
 
     private void drawTransition(Graphics g) {
         g.setColor(Color.BLACK);
-        g.drawString("Congrats! Press SPACE to Continue", 30, 300);
+        drawCenteredString(g, "Room Cleared! Press SPACE to Continue", 300);
+    }
+
+    private void drawVictory(Graphics g) {
+        g.setColor(Color.BLACK);
+        drawCenteredString(g, "Congrats, you WON! Restart to play again", 300);
+    }
+
+    private void drawHealth(Graphics g, int health){
+        g.setColor(Color.BLACK);
+        String str = "HEALTH: %,d";
+        String fstr = String.format(str, health);
+        g.drawString(fstr, 50, 605);
     }
 
     @Override
@@ -56,11 +75,18 @@ public class RenderEngine extends JPanel implements Engine {
             drawTransition(g);
         }
 
+        if(gameEngine.getGameState() == GameState.VICTORY){
+            drawVictory(g);
+        }
+
         if (gameEngine.getGameState() == GameState.PLAYING) {
             for (int i=0; i<renderList.size(); i++) {
                 renderList.get(i).draw(g);
             }
+            drawHealth(g, gameEngine.getReference().getHealth());
         }
+
+
     }
 
     @Override

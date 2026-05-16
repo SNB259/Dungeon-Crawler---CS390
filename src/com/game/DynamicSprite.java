@@ -14,7 +14,7 @@ public class DynamicSprite extends SolidSprite {
     private int health;
     private boolean isInvincible;
     int invincibilityCounter;
-    final int invincibilityDuration = 30;
+    final int invincibilityDuration = 40;
 
     DynamicSprite(Image image, double posX, double posY, double sizeX, double sizeY){
         super(image, posX, posY, sizeX, sizeY);
@@ -22,7 +22,7 @@ public class DynamicSprite extends SolidSprite {
         this.speed = 6;
         this.timeBetweenFrame = 200;
         this.direction = Direction.SOUTH;
-        this.health = 10;
+        this.health = 30;
         this.isInvincible = false;
     }
 

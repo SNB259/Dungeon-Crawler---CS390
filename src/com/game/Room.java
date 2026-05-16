@@ -9,12 +9,24 @@ public class Room {
     private boolean[] doors;
     private int distanceFromEntry;
     private boolean isEntry, isExit;
+    private boolean isCleared;
+    private boolean doorLocked;
 
     public Room(int x, int y){
         this.gridX = x;
         this.gridY = y;
         this.neighbors = new HashMap<>();
         this.doors = new boolean[4];
+        this.isCleared = false;
+        this.doorLocked = false;
+    }
+
+    public boolean isDoorLocked() {
+        return doorLocked;
+    }
+
+    public void setDoorLocked(boolean doorLocked) {
+        this.doorLocked = doorLocked;
     }
 
     public void setDistanceFromEntry(int distanceFromEntry) {
@@ -63,5 +75,13 @@ public class Room {
 
     public boolean isExit() {
         return isExit;
+    }
+
+    public void setRoomCleared(boolean roomCleared) {
+        this.isCleared = roomCleared;
+    }
+
+    public boolean isCleared() {
+        return isCleared;
     }
 }

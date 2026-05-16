@@ -34,13 +34,51 @@ public class GameEngine implements Engine, KeyListener{
 
         }
         if (gameState == GameState.PLAYING) {
+
             physicEngine.update();
+
+            //checks if hero is inside the room
+            boolean heroInside = reference.getPosX() > 128 && reference.getPosX() < 448
+                    && reference.getPosY() > 128 && reference.getPosY() < 448;
+
+            if(heroInside && !currentRoom.isCleared() && !currentRoom.isEntry() && !currentRoom.isDoorLocked()){
+                currentRoom.setDoorLocked(true);
+                reloadTiles(currentRoom);
+            }
+
+            playground.removeDeadEnemies();
+            if(playground.getEnemies().isEmpty()) {
+                currentRoom.setRoomCleared(true);
+                currentRoom.setDoorLocked(false);
+                reloadTiles(currentRoom);
+            }
+
+            renderEngine.clearRenderList();
+            for(Displayable sprite : playground.getSpriteList()){
+                renderEngine.addToRenderList(sprite);
+            }
+            renderEngine.addToRenderList(reference);
+            for(Enemy enemy : playground.getEnemies()){
+                renderEngine.addToRenderList(enemy);
+            }
+            physicEngine.clearMovingSpriteList();
+            physicEngine.addToMovingSpriteList(reference);
+            for(Enemy enemy : playground.getEnemies()){
+                physicEngine.addToMovingSpriteList(enemy);
+            }
+
+            if(reference.getHealth() <= 0){
+                setGameState(GameState.GAMEOVER);
+            }
+
+            if(currentRoom.isExit() && currentRoom.isCleared()){
+                setGameState(GameState.VICTORY);
+            }
         }
 
         if((reference.getPosX() > 576 || reference.getPosX() < 0 || reference.getPosY() > 600 || reference.getPosY() < 0) && gameState == GameState.PLAYING){
             setGameState(GameState.TRANSITION);
         }
-        playground.removeDeadEnemies();
     }
 
     public void setRenderEngine(RenderEngine renderEngine){
@@ -100,6 +138,10 @@ public class GameEngine implements Engine, KeyListener{
     @Override
     public void keyTyped(KeyEvent e) {
 
+    }
+
+    public DynamicSprite getReference() {
+        return reference;
     }
 
     @Override
@@ -162,9 +204,9 @@ public class GameEngine implements Engine, KeyListener{
     }
 
     public void loadRoom(Room room){
-
+//        room.setDoorLocked(false);
         playground.reload();
-        playground.loadPlayground(room, 3);
+        playground.loadPlayground(room);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
         renderEngine.clearRenderList();
         for(Displayable sprite : playground.getSpriteList()){
@@ -178,6 +220,24 @@ public class GameEngine implements Engine, KeyListener{
         physicEngine.addToMovingSpriteList(reference);
         for(int i=0; i<playground.getEnemies().size(); i++) {
             physicEngine.addToMovingSpriteList(playground.getEnemies().get(i));
+        }
+    }
+
+    public void reloadTiles(Room room){
+        playground.reloadTilesOnly(room);
+        physicEngine.setEnvironment(playground.getSolidSpriteList());
+        renderEngine.clearRenderList();
+        for(Displayable sprite : playground.getSpriteList()){
+            renderEngine.addToRenderList(sprite);
+        }
+        renderEngine.addToRenderList(reference);
+        for(Enemy enemy : playground.getEnemies()){
+            renderEngine.addToRenderList(enemy);
+        }
+        physicEngine.clearMovingSpriteList();
+        physicEngine.addToMovingSpriteList(reference);
+        for(Enemy enemy : playground.getEnemies()){
+            physicEngine.addToMovingSpriteList(enemy);
         }
     }
 

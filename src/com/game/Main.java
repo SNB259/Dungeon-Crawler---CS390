@@ -14,11 +14,10 @@ public class Main {
 
     public Main() throws Exception {
         displayZoneFrame = new JFrame("Java Labs");
-        displayZoneFrame.setSize(576, 600);
+        displayZoneFrame.setSize(576, 650); //actual game height = 600
         displayZoneFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
-//        DynamicSprite goblin = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/purpleGoblinSpriteSheet.png")),200,300, 48,50);
 
         DungeonGenerator dungeonGenerator = new DungeonGenerator(5, 5, 8 );
         Room [][] dungeonGrid = dungeonGenerator.generateDungeon();
