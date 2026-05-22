@@ -22,9 +22,6 @@ public class DungeonGenerator {
     }
 
     public Room[][] generateDungeon(){
-//        this.grid = new Room[grid.length][grid[0].length];
-//        this.queue.clear();
-//        this.roomCount = 0;
 
         //pick random wall to attach entry
         DungeonDirection[] directions = DungeonDirection.values();
@@ -106,7 +103,6 @@ public class DungeonGenerator {
                 }
             }
         }
-//        assert exitRoom != null;
         exitRoom.setExit(true);
 
         printGrid();

@@ -48,13 +48,6 @@ public class Playground {
             boolean doorWest  = room.getNeighbors().containsKey(DungeonDirection.WEST);
             boolean doorEast  = room.getNeighbors().containsKey(DungeonDirection.EAST);
 
-            System.out.println("Loading room at: " + room.getGridX() + "," + room.getGridY());
-            System.out.println("doorNorth: " + doorNorth);
-            System.out.println("doorSouth: " + doorSouth);
-            System.out.println("doorEast: "  + doorEast);
-            System.out.println("doorWest: "  + doorWest);
-            System.out.println("neighbor count: " + room.getNeighbors().size());
-
             for(int row=0; row<roomGrid.length; row++) {
                 for (int col = 0; col < roomGrid[row].length; col++) {
                     if (row == 0 || row == 8 || col == 0 || col == 8) {
@@ -124,13 +117,6 @@ public class Playground {
             boolean doorSouth = room.getNeighbors().containsKey(DungeonDirection.SOUTH);
             boolean doorWest = room.getNeighbors().containsKey(DungeonDirection.WEST);
             boolean doorEast = room.getNeighbors().containsKey(DungeonDirection.EAST);
-
-            System.out.println("Loading room at: " + room.getGridX() + "," + room.getGridY());
-            System.out.println("doorNorth: " + doorNorth);
-            System.out.println("doorSouth: " + doorSouth);
-            System.out.println("doorEast: " + doorEast);
-            System.out.println("doorWest: " + doorWest);
-            System.out.println("neighbor count: " + room.getNeighbors().size());
 
             for (int row = 0; row < roomGrid.length; row++) {
                 for (int col = 0; col < roomGrid[row].length; col++) {

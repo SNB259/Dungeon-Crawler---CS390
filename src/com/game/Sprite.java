@@ -57,6 +57,4 @@ public class Sprite implements Displayable {
         sizeY = y_size;
     }
 
-
-
 }

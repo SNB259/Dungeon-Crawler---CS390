@@ -61,7 +61,6 @@ public class DynamicSprite extends SolidSprite {
         g.drawImage(super.getImage(), destinationXStart, destinationYStart, destinationXEnd, destinationYEnd, sourceXStart, sourceYStart, sourceXEnd, sourceYEnd, null);
     }
 
-    //breaks?
     private void move(){
         switch(direction){
             case NORTH -> {
@@ -127,17 +126,6 @@ public class DynamicSprite extends SolidSprite {
         }
         else {
             isWalking = false;
-        }
-
-    }
-
-    public void resetPos(GameState gameState){
-        if(gameState == GameState.GAMEOVER || gameState == GameState.TRANSITION){
-            this.setPosX(333);
-            this.setPosY(333);
-
-
-            this.setDirection(Direction.SOUTH);
         }
     }
 }

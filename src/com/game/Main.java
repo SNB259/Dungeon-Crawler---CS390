@@ -14,7 +14,7 @@ public class Main {
 
     public Main() throws Exception {
         displayZoneFrame = new JFrame("Java Labs");
-        displayZoneFrame.setSize(576, 650); //actual game height = 600
+        displayZoneFrame.setSize(576, 650); //actual game height = 600, added 50 pixels for health indicator
         displayZoneFrame.setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         DynamicSprite hero = new DynamicSprite(ImageIO.read(new File("The assets-20260206/img/heroTileSheetLowRes.png")),200,300, 48,50);
@@ -51,11 +51,9 @@ public class Main {
         for(int i=0; i<playground.getSpriteList().size(); i++){
             renderEngine.addToRenderList(playground.getSpriteList().get(i));
         }
-        //Why?? redundant?
+
         renderEngine.addToRenderList(hero);
-//        renderEngine.addToRenderList(goblin);
         physicEngine.addToMovingSpriteList(hero);
-//        physicEngine.addToMovingSpriteList(goblin);
         physicEngine.setEnvironment(playground.getSolidSpriteList());
     }
 

@@ -3,8 +3,6 @@ package com.game;
 import java.awt.event.KeyListener;
 import java.awt.event.KeyEvent;
 import java.util.Random;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 public class GameEngine implements Engine, KeyListener{
 
@@ -146,12 +144,8 @@ public class GameEngine implements Engine, KeyListener{
 
     @Override
     public void keyPressed(KeyEvent e) {
-//        if(e.getKeyCode() == KeyEvent.VK_SPACE){
-//            this.gameState = GameState.PLAYING;
-//        }
 
         switch(e.getKeyCode()){
-            //DEBUG!!!
             case KeyEvent.VK_SPACE:
                 this.gameState = GameState.PLAYING;
                 break;
@@ -204,7 +198,6 @@ public class GameEngine implements Engine, KeyListener{
     }
 
     public void loadRoom(Room room){
-//        room.setDoorLocked(false);
         playground.reload();
         playground.loadPlayground(room);
         physicEngine.setEnvironment(playground.getSolidSpriteList());

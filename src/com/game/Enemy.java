@@ -20,7 +20,6 @@ public class Enemy extends DynamicSprite{
     private boolean isStunned;
     private int stunCounter;
     private int stunDuration;
-    private boolean isBoss;
 
     public Enemy(DynamicSprite hero, Image image, double posX, double posY, double sizeX, double sizeY){
         super(image, posX, posY, sizeX, sizeY);
@@ -37,15 +36,6 @@ public class Enemy extends DynamicSprite{
         this.isStunned = false;
         this.stunCounter = 0;
         this.stunDuration = 30;
-        this.isBoss = false;
-    }
-
-    public boolean isBoss() {
-        return isBoss;
-    }
-
-    public void setBoss(boolean boss) {
-        isBoss = boss;
     }
 
     public void setHealth(int health) {
